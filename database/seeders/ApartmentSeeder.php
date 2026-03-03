@@ -18,17 +18,16 @@ class ApartmentSeeder extends Seeder
         $file = new \SplFileObject('storage/app/private/property-data.csv');
         $isFirstLine = true;
         while (! $file->eof()) {
-            $line = $file->fgetcsv(',');
-
             if ($isFirstLine) {
                 $isFirstLine = false;
 
                 continue; // skip first line with property names
             }
 
-            if ($line !== false) {
+            $values = $file->fgetcsv(',');
+            if ($values !== false) {
                 Apartment::factory()->create(
-                    array_combine($apartmentProperties, $line)
+                    array_combine($apartmentProperties, $values)
                 );
             }
         }
