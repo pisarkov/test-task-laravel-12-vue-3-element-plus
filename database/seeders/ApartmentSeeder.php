@@ -15,6 +15,15 @@ class ApartmentSeeder extends Seeder
         $apartment = new Apartment;
         $apartmentProperties = $apartment->getFillable();
 
+        foreach ($this->getApartmentData() as $data) {
+            Apartment::factory()->create(
+                array_combine($apartmentProperties, $data)
+            );
+        }
+    }
+
+    protected function getApartmentData(): \Generator
+    {
         $file = new \SplFileObject('storage/app/private/property-data.csv');
         $isFirstLine = true;
         while (! $file->eof()) {
@@ -26,9 +35,7 @@ class ApartmentSeeder extends Seeder
 
             $values = $file->fgetcsv(',');
             if ($values !== false) {
-                Apartment::factory()->create(
-                    array_combine($apartmentProperties, $values)
-                );
+                yield $values;
             }
         }
     }
